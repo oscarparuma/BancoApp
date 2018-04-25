@@ -7,14 +7,67 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 http://www.springframework.org/schema/context
 http://www.springframework.org/schema/context/spring-context-3.0.xsd">
  
-  <context:component-scan base-package="co.edu.lasalle.controller" />
-	<bean
-	  class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-	  <property name="prefix">
-		<value>/webapp/views/</value>
-	  </property>
-	  <property name="suffix">
-	    <value>.jsp</value>
-	  </property>
-	</bean>
+  <context:component-scan base-package="co.edu.lasalle" />
+
+  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"	destroy-method="close">
+	<property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
+	<property name="url" value="jdbc:mysql://localhost:3306/BancoApp?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC" />
+	<property name="username" value="root" />
+	<property name="password" value="" />
+  </bean>
+
+  <!-- Session Factory Declaration -->
+  <bean id="sessionFactory"
+	class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+	<property name="dataSource" ref="dataSource" />
+	<property name="annotatedClasses">
+		<list>
+			<value>co.edu.lasalle.model.Cliente</value>
+			<value>co.edu.lasalle.model.Cuenta</value>
+			<value>co.edu.lasalle.model.Transaccion</value>
+			<value>co.edu.lasalle.model.Destinatario</value>
+		</list>
+	</property>
+	<property name="hibernateProperties">
+		<props>
+		  <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+		  <prop key="hibernate.show_sql">true</prop>
+		</props>
+	</property>
+  </bean>
+
+  <bean id="clienteDao" class="co.edu.lasalle.dao.ClienteDaoImpl">
+	<property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="clienteService" class="co.edu.lasalle.service.ClienteServiceImpl">
+	<property name="clienteDao" ref="clienteDao"></property>
+  </bean>
+
+  <bean id="cuentaDao" class="co.edu.lasalle.dao.CuentaDaoImpl">
+	<property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="cuentaService" class="co.edu.lasalle.service.CuentaServiceImpl">
+	<property name="cuentaDao" ref="cuentaDao"></property>
+  </bean>
+  
+  <bean id="transaccionDao" class="co.edu.lasalle.dao.TransaccionDaoImpl">
+	<property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="transaccionService" class="co.edu.lasalle.service.TransaccionServiceImpl">
+	<property name="transaccionDao" ref="transaccionDao"></property>
+  </bean>
+
+  <bean id="destinatarioDao" class="co.edu.lasalle.dao.DestinatarioDaoImpl">
+	<property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+
+  <bean
+    class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="prefix">
+	  <value>/webapp/views/</value>
+    </property>
+    <property name="suffix">
+      <value>.jsp</value>
+    </property>
+  </bean>
 </beans>
