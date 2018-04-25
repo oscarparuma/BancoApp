@@ -1,0 +1,44 @@
+-- Motor de base de datos utilizado: MySQL
+
+CREATE DATABASE `bancoapp` DEFAULT CHARACTER SET latin1;
+
+CREATE TABLE cliente (
+id INT NOT NULL AUTO_INCREMENT,
+nombre VARCHAR(50) NOT NULL,
+direccion VARCHAR(50) NOT NULL,
+departamento VARCHAR(20) NOT NULL,
+ciudad VARCHAR(20) NOT NULL,
+clave INT NOT NULL,
+PRIMARY KEY(id)
+) ENGINE=InnoDB;
+
+CREATE TABLE cuenta (
+id INT NOT NULL AUTO_INCREMENT,
+PRIMARY KEY(id)
+) ENGINE=InnoDB;
+
+CREATE TABLE transaccion (
+id INT NOT NULL AUTO_INCREMENT,
+id_cuenta_origen INT NOT NULL,
+id_cuenta_destino INT NOT NULL,
+monto DECIMAL NOT NULL,
+hash VARCHAR(255) NOT NULL,
+tipo_transaccion VARCHAR(20) NOT NULL,
+descripcion VARCHAR(255),
+estado VARCHAR(20) NOT NULL,
+fecha_creacion TIMESTAMP NOT NULL,
+fecha_modificacion TIMESTAMP NOT NULL,
+PRIMARY KEY(id),
+FOREIGN KEY(id_cuenta_origen) REFERENCES cuenta(id)  ON UPDATE CASCADE,
+FOREIGN KEY(id_cuenta_destino) REFERENCES cuenta(id)  ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE destinatario (
+id INT NOT NULL AUTO_INCREMENT,
+nombre VARCHAR(50) NOT NULL,
+email VARCHAR(50) NOT NULL,
+telefono VARCHAR(20) NOT NULL,
+numeroCuenta VARCHAR(20) NOT NULL,
+descripcion VARCHAR(255) NOT NULL,
+PRIMARY KEY(id)
+) ENGINE=InnoDB;
